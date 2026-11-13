@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DressCart Online Dress Shopping</title>
+
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #faf7f6;
+  color: #333;
+}
+header {
+  background: white;
+  padding: 16px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid #eee0de;
+}
+.logo { color: #df727d; font-size: 25px; font-weight: bold; }
+nav { display: flex; gap: 8px; flex-wrap: wrap; }
+button { cursor: pointer; font: inherit; }
+nav button, .secondary {
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+.primary {
+  background: #df727d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 16px;
+}
+.primary:hover { background: #c95765; }
+main { max-width: 1050px; margin: 28px auto; padding: 0 18px 40px; }
+.panel {
+  background: white;
+  padding: 24px;
+  border: 1px solid #eee0de;
+  border-radius: 9px;
+  margin-bottom: 20px;
+}
+.auth { max-width: 390px; margin: 35px auto; text-align: center; }
+.field { margin: 15px 0; text-align: left; }
+label { display: block; font-size: 14px; margin-bottom: 6px; }
+input, select {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: white;
+}
+.full { width: 100%; }
+.tabs { display: flex; gap: 8px; margin: 20px 0; }
+.tabs button { flex: 1; padding: 11px; border: 0; }
+.active { background: #f6dadd; }
+.hero {
+  padding: 30px;
+  background: #f9e8e5;
+  border-radius: 9px;
+  margin-bottom: 28px;
+}
+.hero h1 { font-size: 36px; margin-bottom: 8px; }
+.muted { color: #777; font-size: 14px; line-height: 1.5; }
+.toolbar { display: flex; gap: 10px; margin: 18px 0; }
+.toolbar input { flex: 1; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 18px;
+}
+.product {
+  background: white;
+  border: 1px solid #eee0de;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.product img {
+  display: block;
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  background: #eee;
+}
+.product-info { padding: 14px; }
+.price { color: #bd4d5b; font-weight: bold; }
+.actions { display: flex; gap: 7px; }
+.actions button { flex: 1; padding: 9px 5px; }
+.detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+.detail img {
+  width: 100%;
+  max-height: 440px;
+  object-fit: cover;
+  border-radius: 7px;
+}
+.choices { display: flex; gap: 8px; flex-wrap: wrap; }
+.choices button {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 9px 14px;
+  border-radius: 4px;
+}
+.choices button.selected { border: 2px solid #df727d; background: #fff0f1; }
+.swatch {
+  width: 30px;
+  height: 30px;
+  padding: 0 !important;
+  border-radius: 50% !important;
+}
+.qty { display: flex; align-items: center; gap: 12px; margin: 18px 0; }
+.cart-row {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+}
+/* SIDEBAR DESIGN */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  justify-content: flex-start;
+  gap: 18px;
+}
+
+.menu-button, .theme-button {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+  color: #df727d;
+}
+
+.theme-button {
+  margin-left: auto;
+  font-size: 18px;
+}
+
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: -290px;
+  width: 270px;
+  height: 100%;
+  background: white;
+  z-index: 300;
+  padding: 22px;
+  box-shadow: 3px 0 15px rgba(0,0,0,.12);
+  transition: left .3s ease;
+  overflow-y: auto;
+}
+
+#sidebar.open {
+  left: 0;
+}
+
+#sidebarOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 250;
+  display: none;
+}
+
+#sidebarOverlay.show {
+  display: block;
+}
+
+.sidebar-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.sidebar-heading button {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.sidebar-label {
+  font-size: 11px;
+  color: #999;
+  letter-spacing: 2px;
+  margin: 22px 0 10px;
+}
+
+#sidebar > button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 14px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  color: #444;
+}
+
+#sidebar > button:hover {
+  background: #fff0f1;
+  color: #c95765;
+}
+
+.sidebar-divider {
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+}
+
+body.dark #sidebar {
+  background: #292429;
+  color: white;
+}
+
+body.dark #sidebar > button {
+  color: white;
+}
+
+body.dark .sidebar-heading button {
+  color: white;
+}
+
+body.dark .sidebar-divider {
+  border-color: #51434b;
+}
+
+body.dark #sidebar > button:hover {
+  background: #49343c;
+}
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 11px; border-bottom: 1px solid #eee; text-align: left; }
+.payment-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 15px 0;
+}
+.payment-card {
+  border: 2px solid #eee;
+  border-radius: 9px;
+  padding: 17px 10px;
+  text-align: center;
+  cursor: pointer;
+  background: white;
+}
+.payment-card.selected {
+  border-color: #df727d;
+  background: #fff1f2;
+}
+.payment-icon { font-size: 28px; margin-bottom: 8px; }
+.social-btn {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: white;
+  font-weight: bold;
+}
+.social-btn:hover { background: #f7f7f7; }
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #888;
+  margin: 18px 0;
+}
+.divider::before, .divider::after {
+  content: "";
+  height: 1px;
+  background: #ddd;
+  flex: 1;
+}
+.hidden { display: none !important; }
+.total {
+  text-align: right;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.status {
+  display: inline-block;
+  padding: 5px 9px;
+  background: #fff0d7;
+  border-radius: 20px;
+  font-size: 12px;
+}
+footer {
+  background: white;
+  padding: 22px;
+  text-align: center;
+  border-top: 1px solid #eee;
+  color: #777;
+}
+body.dark {
+  background: #191719;
+  color: #f5eeee;
+}
+body.dark header, body.dark .panel, body.dark .product,
+body.dark footer, body.dark .payment-card {
+  background: #292429;
+  color: #f5eeee;
+  border-color: #51434b;
+}
+body.dark input, body.dark select, body.dark .secondary,
+body.dark .social-btn, body.dark .choices button {
+  background: #383138;
+  color: white;
+  border-color: #665660;
+}
+body.dark .hero { background: #49343c; }
+body.dark th, body.dark td { border-color: #51434b; }
+@media(max-width:600px) {
+  header { padding: 14px; }
+  nav { width: 100%; }
+  nav button { flex: 1; }
+  .hero h1 { font-size: 27px; }
+  .cart-row { grid-template-columns: 65px 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <button class="menu-button" onclick="toggleSidebar()">☰</button>
+  <div class="logo">DressCart</div>
+  <button class="theme-button" onclick="toggleTheme()">☾ / ☀</button>
+</header>
+
+<div id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<aside id="sidebar">
+  <div class="sidebar-heading">
+    <span class="logo">DressCart</span>
+    <button onclick="toggleSidebar()">✕</button>
+  </div>
+
+  <p class="sidebar-label">MENU</p>
+
+  <button onclick="navigate(homePage)">⌂ Home</button>
+  <button onclick="navigate(homePage)">♧ Shop Dresses</button>
+  <button onclick="navigate(cartPage)">🛍 My Cart (<span id="cartCount">0</span>)</button>
+  <button onclick="navigate(historyPage)">▤ My Orders</button>
+
+  <div class="sidebar-divider"></div>
+
+  <p class="sidebar-label">ACCOUNT</p>
+
+  <button id="authNav" onclick="navigate(authPage)">♙ Login / Register</button>
+  <button id="adminNav" class="hidden" onclick="navigate(adminPage)">▦ Admin Dashboard</button>
+  <button id="logoutNav" class="hidden" onclick="logout()">↪ Logout</button>
+</aside>
+
+<main id="app">
+  <div class="panel">Loading DressCart...</div>
+</main>
+
+<footer>
+  DressCart Online Dress Shopping
+  <p class="muted">Find the dress that fits your style.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script>
+  
+  // SIDEBAR FUNCTIONS
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("sidebarOverlay").classList.toggle("show");
+}
+
+function closeSidebar() {
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("sidebarOverlay").classList.remove("show");
+}
+
+function navigate(pageFunction) {
+  closeSidebar();
+  pageFunction();
+}
+// FIREBASE CONFIGURATION
+const firebaseConfig = {
+  apiKey: "AIzaSyCHwo_3GJYMiW7oNO3kJK3T0cdGqG60RpE",
+  authDomain: "dresscart.firebaseapp.com",
+  projectId: "dresscart",
+  appId: "1:1065951945924:web:687b1314ae0851185c5591"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const firebaseAuth = firebase.auth();
+  // DRESS PRODUCTS
+const products = [
+  {
+    id: 1,
+    name: "Mini Dress",
+    price: 599,
+    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600",
+    colors: ["Pink", "Black", "White"],
+    sizes: ["XS", "S", "M", "L", "XL"]
+  },
+  {
+    id: 2,
+    name: "Summer Dress",
+    price: 799,
+    image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600",
+    colors: ["Blue", "White", "Yellow"],
+    sizes: ["XS", "S", "M", "L", "XL"]
+  },
+  {
+    id: 3,
+    name: "Floral Dress",
+    price: 899,
+    image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600",
+    colors: ["Pink", "Green", "White"],
+    sizes: ["XS", "S", "M", "L", "XL"]
+  },
+  {
+    id: 4,
+    name: "Tube Dress",
+    price: 699,
+    image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=600",
+    colors: ["Black", "Red", "Pink"],
+    sizes: ["XS", "S", "M", "L", "XL"]
+  }
+];
+
+let cart = JSON.parse(localStorage.getItem("dcCart")) || [];
+let currentUser = JSON.parse(localStorage.getItem("dcUser")) || null;
+let selectedProduct = null;
+let selectedSize = "M";
+let selectedColor = "";
+let selectedPayment = "Cash";
+let selectedQuantity = 1;
+
+let users = JSON.parse(localStorage.getItem("dcUsers")) || [];
+let orders = JSON.parse(localStorage.getItem("dcOrders")) || [];
+
+// CREATE DEMO ADMIN ACCOUNT
+if (!users.some(user => user.email === "admin@dresscart.com")) {
+  users.push({
+    name: "DressCart Admin",
+    email: "admin@dresscart.com",
+    password: "admin123",
+    role: "admin"
+  });
+  localStorage.setItem("dcUsers", JSON.stringify(users));
+}
+
+// SAVE DATA
+function saveData() {
+  localStorage.setItem("dcCart", JSON.stringify(cart));
+  localStorage.setItem("dcUser", JSON.stringify(currentUser));
+  localStorage.setItem("dcUsers", JSON.stringify(users));
+  localStorage.setItem("dcOrders", JSON.stringify(orders));
+}
+
+// UPDATE NAVIGATION
+function updateNav() {
+  document.getElementById("cartCount").textContent =
+    cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  document.getElementById("authNav").classList.toggle(
+    "hidden", !!currentUser
+  );
+
+  document.getElementById("logoutNav").classList.toggle(
+    "hidden", !currentUser
+  );
+
+  document.getElementById("adminNav").classList.toggle(
+    "hidden",
+    !currentUser || currentUser.role !== "admin"
+  );
+}
+
+// HOME PAGE
+function homePage() {
+  updateNav();
+
+  document.getElementById("app").innerHTML = `
+    <section class="hero">
+      <h1>Discover Your Style</h1>
+      <p>Find beautiful dresses for every occasion.</p>
+      <button class="primary" onclick="document.getElementById('products').scrollIntoView()">
+        Shop Now
+      </button>
+    </section>
+
+    <h2>Our Collection</h2>
+
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search dresses..." oninput="searchProducts()">
+    </div>
+
+    <div class="grid" id="products">
+      ${products.map(product => `
+        <div class="product">
+          <img src="${product.image}" alt="${product.name}">
+          <div class="product-info">
+            <h3>${product.name}</h3>
+            <p class="price">₱${product.price.toLocaleString("en-PH")}</p>
+            <div class="actions">
+              <button class="secondary" onclick="showDetails(${product.id})">
+                View Details
+              </button>
+              <button class="primary" onclick="showDetails(${product.id})">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+// SEARCH PRODUCTS
+function searchProducts() {
+  const keyword = document.getElementById("searchInput").value.toLowerCase();
+
+  const filtered = products.filter(product =>
+    product.name.toLowerCase().includes(keyword)
+  );
+
+  document.getElementById("products").innerHTML = filtered.map(product => `
+    <div class="product">
+      <img src="${product.image}" alt="${product.name}">
+      <div class="product-info">
+        <h3>${product.name}</h3>
+        <p class="price">₱${product.price.toLocaleString("en-PH")}</p>
+        <button class="primary full" onclick="showDetails(${product.id})">
+          View Details / Add to Cart
+        </button>
+      </div>
+    </div>
+  `).join("") || "<p>No dresses found.</p>";
+}
+
+// PRODUCT DETAILS
+function showDetails(id) {
+  selectedProduct = products.find(product => product.id === id);
+  selectedSize = "M";
+  selectedColor = selectedProduct.colors[0];
+  selectedQuantity = 1;
+
+  document.getElementById("app").innerHTML = `
+    <div class="panel">
+      <button class="secondary" onclick="homePage()">← Back to Shop</button>
+
+      <div class="detail" style="margin-top:20px;">
+        <div>
+          <img src="${selectedProduct.image}" alt="${selectedProduct.name}">
+        </div>
+
+        <div>
+          <h2>${selectedProduct.name}</h2>
+          <h3 class="price">₱${selectedProduct.price.toLocaleString("en-PH")}</h3>
+          <p class="muted">Choose your preferred size, color, and quantity.</p>
+
+          <h4>Select Size</h4>
+          <div class="choices">
+            ${selectedProduct.sizes.map(size => `
+              <button class="${size === selectedSize ? "selected" : ""}"
+                onclick="chooseSize('${size}', this)">
+                ${size}
+              </button>
+            `).join("")}
+          </div>
+
+          <h4>Select Color</h4>
+          <div class="choices">
+            ${selectedProduct.colors.map(color => `
+              <button class="${color === selectedColor ? "selected" : ""}"
+                onclick="chooseColor('${color}', this)">
+                ${color}
+              </button>
+            `).join("")}
+          </div>
+
+          <h4>Quantity</h4>
+          <div class="qty">
+            <button class="secondary" onclick="changeQuantity(-1)">−</button>
+            <strong id="quantityDisplay">1</strong>
+            <button class="secondary" onclick="changeQuantity(1)">+</button>
+          </div>
+
+          <button class="primary full" onclick="addToCart()">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// SELECT SIZE
+function chooseSize(size, button) {
+  selectedSize = size;
+  button.parentElement.querySelectorAll("button").forEach(btn =>
+    btn.classList.remove("selected")
+  );
+  button.classList.add("selected");
+}
+
+// SELECT COLOR
+function chooseColor(color, button) {
+  selectedColor = color;
+  button.parentElement.querySelectorAll("button").forEach(btn =>
+    btn.classList.remove("selected")
+  );
+  button.classList.add("selected");
+}
+
+// CHANGE QUANTITY
+function changeQuantity(amount) {
+  selectedQuantity = Math.max(1, selectedQuantity + amount);
+  document.getElementById("quantityDisplay").textContent = selectedQuantity;
+}
+
+// ADD TO CART
+function addToCart() {
+  if (!selectedProduct) return;
+
+  const existing = cart.find(item =>
+    item.id === selectedProduct.id &&
+    item.size === selectedSize &&
+    item.color === selectedColor
+  );
+
+  if (existing) {
+    existing.quantity += selectedQuantity;
+  } else {
+    cart.push({
+      id: selectedProduct.id,
+      name: selectedProduct.name,
+      price: selectedProduct.price,
+      image: selectedProduct.image,
+      size: selectedSize,
+      color: selectedColor,
+      quantity: selectedQuantity
+    });
+  }
+
+  saveData();
+  updateNav();
+
+  alert("Dress successfully added to your cart!");
+  homePage();
+}
+
+// CART PAGE
+function cartPage() {
+  updateNav();
+
+  document.getElementById("app").innerHTML = `
+    <div class="panel">
+      <h2>My Shopping Cart</h2>
+
+      ${cart.length === 0 ? `
+        <p>Your cart is empty.</p>
+        <button class="primary" onclick="homePage()">Continue Shopping</button>
+      ` : `
+        ${cart.map((item, index) => `
+          <div class="cart-row">
+            <img src="${item.image}" style="width:80px;height:100px;object-fit:cover;">
+            <div>
+              <strong>${item.name}</strong>
+              <p class="muted">Size: ${item.size} | Color: ${item.color}</p>
+              <p>Quantity: ${item.quantity}</p>
+              <p class="price">₱${(item.price * item.quantity).toLocaleString("en-PH")}</p>
+            </div>
+            <button class="secondary" onclick="removeCartItem(${index})">Remove</button>
+          </div>
+        `).join("")}
+
+        <div class="total">
+          Total: ₱${cart.reduce((sum, item) =>
+            sum + item.price * item.quantity, 0
+          ).toLocaleString("en-PH")}
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+          <button class="secondary" onclick="homePage()">Continue Shopping</button>
+          <button class="primary" onclick="checkoutPage()">Proceed to Checkout</button>
+        </div>
+      `}
+    </div>
+  `;
+}
+
+// REMOVE ITEM
+function removeCartItem(index) {
+  cart.splice(index, 1);
+  saveData();
+  cartPage();
+}
+
+// DARK AND LIGHT MODE
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem(
+    "dcTheme",
+    document.body.classList.contains("dark") ? "dark" : "light"
+  );
+}
+// LOGIN AND REGISTER PAGE
+function authPage() {
+  updateNav();
+
+  document.getElementById("app").innerHTML = `
+    <div class="panel auth">
+      <h2>Welcome to DressCart</h2>
+      <p class="muted">Login to your account or create a new one.</p>
+
+      <div class="tabs">
+        <button class="active" id="loginTab" onclick="showLogin()">Login</button>
+        <button id="registerTab" onclick="showRegister()">Register</button>
+      </div>
+
+      <div id="authForm"></div>
+
+      <div class="divider">OR CONTINUE WITH</div>
+
+      <button class="social-btn" onclick="socialLogin('Google')">
+        🌐 Continue with Google
+      </button>
+
+      <button class="social-btn" onclick="socialLogin('Facebook')">
+        🔵 Continue with Facebook
+      </button>
+    </div>
+  `;
+
+  showLogin();
+}
+
+function showLogin() {
+  document.getElementById("loginTab").classList.add("active");
+  document.getElementById("registerTab").classList.remove("active");
+
+  document.getElementById("authForm").innerHTML = `
+    <div class="field">
+      <label>Email</label>
+      <input id="loginEmail" type="email" placeholder="Enter your email">
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <input id="loginPassword" type="password" placeholder="Enter your password">
+    </div>
+
+    <button class="primary full" onclick="login()">Login</button>
+  `;
+}
+
+function showRegister() {
+  document.getElementById("registerTab").classList.add("active");
+  document.getElementById("loginTab").classList.remove("active");
+
+  document.getElementById("authForm").innerHTML = `
+    <div class="field">
+      <label>Full Name</label>
+      <input id="registerName" placeholder="Enter your name">
+    </div>
+
+    <div class="field">
+      <label>Email</label>
+      <input id="registerEmail" type="email" placeholder="Enter your email">
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <input id="registerPassword" type="password" placeholder="Create a password">
+    </div>
+
+    <button class="primary full" onclick="register()">Create Account</button>
+  `;
+}
+
+function login() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+
+  const user = users.find(u =>
+    u.email.toLowerCase() === email.toLowerCase() &&
+    u.password === password
+  );
+
+  if (!user) {
+    alert("Incorrect email or password.");
+    return;
+  }
+
+  currentUser = user;
+  saveData();
+  alert("Welcome, " + user.name + "!");
+  homePage();
+}
+
+function register() {
+  const name = document.getElementById("registerName").value.trim();
+  const email = document.getElementById("registerEmail").value.trim();
+  const password = document.getElementById("registerPassword").value;
+
+  if (!name || !email || !password) {
+    alert("Please complete all fields.");
+    return;
+  }
+
+  if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+    alert("This email is already registered.");
+    return;
+  }
+
+  const newUser = {
+    name,
+    email,
+    password,
+    role: "customer"
+  };
+
+  users.push(newUser);
+  currentUser = newUser;
+  saveData();
+
+  alert("Your account has been created!");
+  homePage();
+}
+
+
+// GOOGLE AND FACEBOOK LOGIN
+async function socialLogin(provider) {
+  let authProvider;
+
+  if (provider === "Google") {
+    authProvider = new firebase.auth.GoogleAuthProvider();
+  } else if (provider === "Facebook") {
+    authProvider = new firebase.auth.FacebookAuthProvider();
+  } else {
+    return;
+  }
+
+  try {
+    const result = await firebaseAuth.signInWithPopup(authProvider);
+    const account = result.user;
+
+let user = users.find(u => u.uid === account.uid);
+
+    if (!user) {
+      user = {
+        name: account.displayName || "DressCart Customer",
+        email: account.email,
+        role: "customer",
+        provider: provider,
+        uid: account.uid
+      };
+
+      users.push(user);
+    } else {
+      user.name = account.displayName || user.name;
+      user.uid = account.uid;
+      user.provider = provider;
+    }
+
+    currentUser = user;
+    saveData();
+
+    alert("Successfully signed in with " + provider + "!");
+    homePage();
+
+  } catch (error) {
+    console.error(error);
+    alert("Sign-in failed: " + error.message);
+  }
+}
+
+// LOGOUT
+function logout() {
+  currentUser = null;
+  saveData();
+  alert("You have logged out.");
+  homePage();
+}
+
+// CHECKOUT PAGE
+function checkoutPage() {
+  if (!currentUser) {
+    alert("Please login before checking out.");
+    authPage();
+    return;
+  }
+
+  if (cart.length === 0) {
+    alert("Your cart is empty.");
+    cartPage();
+    return;
+  }
+
+  const total = cart.reduce((sum, item) =>
+    sum + item.price * item.quantity, 0
+  );
+
+  document.getElementById("app").innerHTML = `
+    <div class="panel">
+      <h2>Checkout</h2>
+
+      <h3>Delivery Information</h3>
+
+      <div class="field">
+        <label>Customer Name</label>
+        <input id="customerName" value="${currentUser.name}">
+      </div>
+
+      <div class="field">
+        <label>Contact Number</label>
+        <input id="contactNumber" placeholder="09XXXXXXXXX">
+      </div>
+
+      <div class="field">
+        <label>Delivery Address</label>
+        <textarea id="deliveryAddress" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:5px;" rows="3" placeholder="Enter complete delivery address"></textarea>
+      </div>
+
+      <h3>Payment Method</h3>
+
+      <div class="payment-options">
+        <div class="payment-card selected" onclick="choosePayment('Cash', this)">
+          <div class="payment-icon">💵</div>
+          <strong>Cash</strong>
+          <p class="muted">Cash on Delivery</p>
+        </div>
+
+        <div class="payment-card" onclick="choosePayment('Card', this)">
+          <div class="payment-icon">💳</div>
+          <strong>Card</strong>
+          <p class="muted">Debit / Credit Card</p>
+        </div>
+
+        <div class="payment-card" onclick="choosePayment('GCash', this)">
+          <div class="payment-icon">📱</div>
+          <strong>GCash</strong>
+          <p class="muted">Mobile Wallet</p>
+        </div>
+      </div>
+
+      <div id="paymentInfo" class="panel">
+        Cash on Delivery selected. Pay when your order arrives.
+      </div>
+
+      <h3>Order Summary</h3>
+
+      ${cart.map(item => `
+        <p>${item.name} (${item.size}, ${item.color}) × ${item.quantity}
+        <strong style="float:right;">₱${(item.price * item.quantity).toLocaleString("en-PH")}</strong></p>
+      `).join("")}
+
+      <div class="total">Total: ₱${total.toLocaleString("en-PH")}</div>
+
+      <button class="primary full" onclick="placeOrder()">Place Order</button>
+      <button class="secondary full" style="margin-top:10px;" onclick="cartPage()">Back to Cart</button>
+    </div>
+  `;
+}
+
+function choosePayment(method, element) {
+  selectedPayment = method;
+
+  document.querySelectorAll(".payment-card").forEach(card =>
+    card.classList.remove("selected")
+  );
+
+  element.classList.add("selected");
+
+  const info = document.getElementById("paymentInfo");
+
+  if (method === "Cash") {
+    info.innerHTML = "💵 Cash on Delivery. Pay when your order arrives.";
+  } else if (method === "Card") {
+    info.innerHTML = "💳 Card selected. Actual card payment processing is not connected in this demo.";
+  } else {
+    info.innerHTML = "📱 GCash selected. Actual GCash payment processing is not connected in this demo.";
+  }
+}
+
+// PLACE ORDER
+function placeOrder() {
+  const name = document.getElementById("customerName").value.trim();
+  const contact = document.getElementById("contactNumber").value.trim();
+  const address = document.getElementById("deliveryAddress").value.trim();
+
+  if (!name || !contact || !address) {
+    alert("Please complete your delivery information.");
+    return;
+  }
+
+  const order = {
+    id: Date.now(),
+    customer: name,
+    email: currentUser.email,
+    contact,
+    address,
+    items: [...cart],
+    total: cart.reduce((sum, item) =>
+      sum + item.price * item.quantity, 0
+    ),
+    payment: selectedPayment,
+    status: "Pending",
+    cancelReason: "",
+    date: new Date().toISOString()
+  };
+
+  orders.push(order);
+  cart = [];
+  saveData();
+  updateNav();
+
+  alert("Your order has been placed successfully!");
+  receiptPage(order.id);
+}
+
+// ORDER HISTORY
+function historyPage() {
+  if (!currentUser) {
+    alert("Please login to view your orders.");
+    authPage();
+    return;
+  }
+
+  const myOrders = currentUser.role === "admin"
+    ? orders
+    : orders.filter(order => order.email === currentUser.email);
+
+  document.getElementById("app").innerHTML = `
+    <div class="panel">
+      <h2>My Orders</h2>
+
+      ${myOrders.length === 0 ? "<p>No orders yet.</p>" :
+        myOrders.slice().reverse().map(order => `
+          <div class="panel">
+            <h3>Order #${order.id}</h3>
+            <p>Date: ${new Date(order.date).toLocaleString()}</p>
+            <p>Total: ₱${order.total.toLocaleString("en-PH")}</p>
+            <p>Payment: ${order.payment}</p>
+            <p>Status: <span class="status">${order.status}</span></p>
+
+            ${order.cancelReason ? `<p>Cancellation reason: ${order.cancelReason}</p>` : ""}
+
+            <button class="secondary" onclick="receiptPage(${order.id})">View Receipt</button>
+
+            ${order.status === "Pending" && currentUser.role !== "admin" ?
+              `<button class="secondary" onclick="cancelOrder(${order.id})">Cancel Order</button>` : ""}
+          </div>
+        `).join("")
+      }
+    </div>
+  `;
+}
+
+// CANCEL ORDER
+function cancelOrder(id) {
+  const reason = prompt("Please enter your reason for cancelling this order:");
+
+  if (!reason || !reason.trim()) {
+    alert("A cancellation reason is required.");
+    return;
+  }
+
+  const order = orders.find(o => o.id === id);
+
+  if (!order || order.status !== "Pending") {
+    alert("This order can no longer be cancelled.");
+    return;
+  }
+
+  order.status = "Cancelled";
+  order.cancelReason = reason.trim();
+
+  saveData();
+  alert("Your order has been cancelled.");
+  historyPage();
+}
+
+// RECEIPT
+function receiptPage(id) {
+  const order = orders.find(o => o.id === id);
+
+  if (!order) {
+    alert("Order not found.");
+    return;
+  }
+
+  document.getElementById("app").innerHTML = `
+    <div class="panel" id="receipt">
+      <h2>DressCart</h2>
+      <h3>Order Receipt</h3>
+      <p>Order Number: ${order.id}</p>
+      <p>Date: ${new Date(order.date).toLocaleString()}</p>
+      <hr>
+
+      <p>Customer: ${order.customer}</p>
+      <p>Contact: ${order.contact}</p>
+      <p>Address: ${order.address}</p>
+      <p>Payment: ${order.payment}</p>
+      <p>Status: ${order.status}</p>
+
+      <hr>
+      <h3>Purchased Items</h3>
+
+      ${order.items.map(item => `
+        <p>${item.name} - ${item.size} - ${item.color}
+        × ${item.quantity}
+        <strong style="float:right;">₱${(item.price * item.quantity).toLocaleString("en-PH")}</strong></p>
+      `).join("")}
+
+      <hr>
+      <div class="total">Total: ₱${order.total.toLocaleString("en-PH")}</div>
+      <p class="muted">Thank you for shopping with DressCart!</p>
+    </div>
+
+    <button class="primary" onclick="window.print()">Print Receipt</button>
+    <button class="secondary" onclick="downloadReceipt(${order.id})">Download Receipt</button>
+    <button class="secondary" onclick="historyPage()">Back to Orders</button>
+  `;
+}
+
+// DOWNLOAD RECEIPT
+function downloadReceipt(id) {
+  const order = orders.find(o => o.id === id);
+  if (!order) return;
+
+  let content = `
+DRESSCART ONLINE DRESS SHOPPING
+ORDER RECEIPT
+
+Order Number: ${order.id}
+Date: ${new Date(order.date).toLocaleString()}
+Customer: ${order.customer}
+Contact: ${order.contact}
+Address: ${order.address}
+Payment: ${order.payment}
+Status: ${order.status}
+
+PURCHASED ITEMS
+`;
+
+  order.items.forEach(item => {
+    content += `
+${item.name}
+Size: ${item.size}
+Color: ${item.color}
+Quantity: ${item.quantity}
+Price: PHP ${item.price * item.quantity}
+`;
+  });
+
+  content += `
+
+TOTAL: PHP ${order.total}
+Thank you for shopping with DressCart!
+`;
+
+  const file = new Blob([content], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(file);
+  link.download = "DressCart_Receipt_" + order.id + ".txt";
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+// ADMIN DASHBOARD
+function adminPage() {
+  if (!currentUser || currentUser.role !== "admin") {
+    alert("Access denied. Admin account only.");
+    homePage();
+    return;
+  }
+
+  const totalSales = orders
+    .filter(o => o.status !== "Cancelled")
+    .reduce((sum, o) => sum + o.total, 0);
+
+  const pending = orders.filter(o => o.status === "Pending").length;
+  const completed = orders.filter(o => o.status === "Completed").length;
+
+  document.getElementById("app").innerHTML = `
+    <div class="panel">
+      <h2>Admin Dashboard</h2>
+      <p class="muted">Manage transactions and view sales information.</p>
+
+      <div class="grid">
+        <div class="panel">
+          <h3>Total Sales</h3>
+          <h2>₱${totalSales.toLocaleString("en-PH")}</h2>
+        </div>
+
+        <div class="panel">
+          <h3>Total Orders</h3>
+          <h2>${orders.length}</h2>
+        </div>
+
+        <div class="panel">
+          <h3>Pending Orders</h3>
+          <h2>${pending}</h2>
+        </div>
+
+        <div class="panel">
+          <h3>Completed Orders</h3>
+          <h2>${completed}</h2>
+        </div>
+      </div>
+
+      <h3>Transaction Management</h3>
+      <button class="primary" onclick="adminTransactions()">View Transactions</button>
+
+      <h3>Sales Analytics</h3>
+      <select id="analyticsPeriod" onchange="showAnalytics()">
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
+
+      <div id="analyticsResult" class="panel" style="margin-top:15px;"></div>
+
+      <h3>Archived Orders</h3>
+      <button class="secondary" onclick="archivePage()">View Archive</button>
+    </div>
+  `;
+
+  showAnalytics();
+}
+
+// ADMIN TRANSACTIONS
+function adminTransactions() {
+  if (!currentUser || currentUser.role !== "admin") return;
+
+  document.getElementById("app").innerHTML = `
+    <div class="panel">
+      <h2>All Transactions</h2>
+      <button class="secondary" onclick="adminPage()">Back to Dashboard</button>
+
+      ${orders.length === 0 ? "<p>No transactions yet.</p>" :
+        orders.slice().reverse().map(order => `
+          <div class="panel">
+            <h3>Order #${order.id}</h3>
+            <p>Customer: ${order.customer}</p>
+            <p>Email: ${order.email}</p>
+            <p>Contact: ${order.contact}</p>
+            <p>Total: ₱${order.total.toLocaleString("en-PH")}</p>
+            <p>Payment: ${order.payment}</p>
+            <p>Status: ${order.status}</p>
+            ${order.cancelReason ? `<p>Reason: ${order.cancelReason}</p>` : ""}
+
+            <button class="secondary" onclick="receiptPage(${order.id})">Receipt</button>
+
+            <button class="primary" onclick="changeOrderStatus(${order.id}, 'Completed')">
+              Mark Completed
+            </button>
+
+            <button class="secondary" onclick="adminCancelOrder(${order.id})">
+              Cancel Order
+            </button>
+          </div>
+        `).join("")
+      }
+    </div>
+  `;
+}
+
+// ADMIN CHANGE ORDER STATUS
+function changeOrderStatus(id, status) {
+  const order = orders.find(o => o.id === id);
+  if (!order) return;
+
+  order.status = status;
+  saveData();
+
+  alert("Order status updated.");
+  adminTransactions();
+}
+
+// ADMIN CANCEL ORDER
+function adminCancelOrder(id) {
+  const order = orders.find(o => o.id === id);
+  if (!order) return;
+
+  const reason = prompt("Enter the reason for cancelling this order:");
+
+  if (!reason || !reason.trim()) {
+    alert("A reason is required.");
+    return;
+  }
+
+  order.status = "Cancelled";
+  order.cancelReason = reason.trim();
+
+  saveData();
+  adminTransactions();
+}
+
+// ANALYTICS
+function showAnalytics() {
+  const selector = document.getElementById("analyticsPeriod");
+  if (!selector) return;
+
+  const period = selector.value;
+  const now = new Date();
+
+  let filtered = orders.filter(order => order.status !== "Cancelled");
+
+  filtered = filtered.filter(order => {
+    const date = new Date(order.date);
+
+    if (period === "daily") {
+      return date.toDateString() === now.toDateString();
+    }
+
+    if (period === "weekly") {
+      const difference = (now - date) / (1000 * 60 * 60 * 24);
+      return difference >= 0 && difference < 7;
+    }
+
+    return date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear();
+  });
+
+  const total = filtered.reduce((sum, order) => sum + order.total, 0);
+
+  document.getElementById("analyticsResult").innerHTML = `
+    <h3>${period.charAt(0).toUpperCase() + period.slice(1)} Sales</h3>
+    <h2>₱${total.toLocaleString("en-PH")}</h2>
+    <p>${filtered.length} orders recorded for this period.</p>
+  `;
+}
+
+// ARCHIVE
+function archivePage() {
+  if (!currentUser || currentUser.role !== "admin") return;
+
+  const archived = orders.filter(order =>
+    order.status === "Completed" || order.status === "Cancelled"
+  );
+
+  document.getElementById("app").innerHTML = `
+    <div class="panel">
+      <h2>Order Archive</h2>
+      <button class="secondary" onclick="adminPage()">Back to Dashboard</button>
+
+      ${archived.length === 0 ? "<p>No archived orders.</p>" :
+        archived.map(order => `
+          <div class="panel">
+            <h3>Order #${order.id}</h3>
+            <p>Customer: ${order.customer}</p>
+            <p>Total: ₱${order.total.toLocaleString("en-PH")}</p>
+            <p>Status: ${order.status}</p>
+            ${order.cancelReason ? `<p>Reason: ${order.cancelReason}</p>` : ""}
+            <button class="secondary" onclick="receiptPage(${order.id})">View Receipt</button>
+          </div>
+        `).join("")
+      }
+    </div>
+  `;
+}
+
+// START WEBSITE
+if (localStorage.getItem("dcTheme") === "dark") {
+  document.body.classList.add("dark");
+}
+
+saveData();
+homePage();
+
+
+</script>
+</body>
+</html>
